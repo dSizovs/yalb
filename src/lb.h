@@ -28,4 +28,7 @@ void compute_equilibrium(const RhoView& rho, const VView& v, const FView& f_eq);
 void collision(FView& f, const RhoView& rho, const VView& v,
                const FView& f_eq, double omega);
 
+// Return max_{x,y} |v(x, y, 0)|.  Used to track shear-wave amplitude.
+double max_abs_ux(const VView& v);
+
 #endif

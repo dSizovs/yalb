@@ -95,3 +95,19 @@ void collision(FView& f, const RhoView& rho, const VView& v,
             f(x, y, i) += omega * (f_eq(x, y, i) - f(x, y, i));
         });
 }
+
+double max_abs_ux(const VView& v) {
+    const int Nx = v.extent(0);
+    const int Ny = v.extent(1);
+    double m = 0.0;
+    Kokkos::parallel_reduce(
+        "max_abs_ux",
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({0, 0}, {Nx, Ny}),
+        KOKKOS_LAMBDA(int x, int y, double& local_max) {
+            const double a = v(x, y, 0);
+            const double ab = (a < 0.0) ? -a : a;
+            if (ab > local_max) local_max = ab;
+        },
+        Kokkos::Max<double>(m));
+    return m;
+}
