@@ -203,3 +203,15 @@ relaxes the system back to uniform density.
 Sinusoidal horizontal velocity, decaying over time due to viscosity.
 
 ![shear](figures/m3_shear_ux.png)
+
+### Milestone 04 — shear-wave decay and viscosity measurement
+
+The amplitude of the sinusoidal velocity profile decays exponentially due to
+viscosity. Fitting `ln(amplitude)` vs `t` recovers the kinematic viscosity ν,
+which we compare to the BGK analytical formula `ν = (1/3)(1/ω − 1/2)`.
+
+Velocity and density profiles over time (ω = 1):
+![profiles](figures/m4_profiles.png)
+
+Measured ν vs analytical prediction across ω ∈ (0, 2):
+![viscosity](figures/m4_viscosity.png)
