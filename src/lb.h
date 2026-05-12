@@ -3,24 +3,29 @@
 
 #include <Kokkos_Core.hpp>
 
-// Type aliases for the Kokkos Views we use throughout.
-// f is the distribution function: f(x, y, i) for i in [0..9).
-// rho is the density: rho(x, y).
-// v is the macroscopic velocity: v(x, y, d) for d in [0..2).
-using FView   = Kokkos::View<double***>;  // (Nx, Ny, 9)
-using RhoView = Kokkos::View<double**>;   // (Nx, Ny)
-using VView   = Kokkos::View<double***>;  // (Nx, Ny, 2)
+// f(x, y, i), rho(x, y), v(x, y, d)
+using FView   = Kokkos::View<double***>;
+using RhoView = Kokkos::View<double**>;
+using VView   = Kokkos::View<double***>;
 
 // Compute density: rho(x, y) = sum_i f(x, y, i)
 void compute_density(const FView& f, const RhoView& rho);
 
 // Compute macroscopic velocity:
-//   v(x, y, d) = (1/rho(x,y)) * sum_i f(x, y, i) * c_i_d
+//   v(x, y, d) = (1/rho) * sum_i f(x, y, i) * c_i_d
 void compute_velocity(const FView& f, const RhoView& rho, const VView& v);
 
-// Streaming step: shift f(x, y, i) to f(x + cx[i], y + cy[i], i).
-// Uses a temporary view since each cell reads from neighbors.
-// Periodic boundaries.
+// Streaming: shift f(x, y, i) -> f(x + cx[i], y + cy[i], i), periodic.
 void streaming(FView& f);
+
+// Compute equilibrium distribution from local density and velocity:
+//   f_eq_i = w_i * rho * [ 1 + 3(c.u) + 9/2 (c.u)^2 - 3/2 |u|^2 ]
+void compute_equilibrium(const RhoView& rho, const VView& v, const FView& f_eq);
+
+// BGK collision step (in place):
+//   f_i <- f_i + omega * (f_eq_i - f_i)
+// Computes rho, u, and f_eq internally.
+void collision(FView& f, const RhoView& rho, const VView& v,
+               const FView& f_eq, double omega);
 
 #endif

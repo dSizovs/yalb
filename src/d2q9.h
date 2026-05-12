@@ -23,4 +23,14 @@ constexpr int D = 2;  // spatial dimensions
 constexpr int cx[Q] = {0,  1,  0, -1,  0,  1, -1, -1,  1};
 constexpr int cy[Q] = {0,  0,  1,  0, -1,  1,  1, -1, -1};
 
+// D2Q9 weights for the equilibrium distribution.
+//   4/9   for rest,
+//   1/9   for axial directions (1..4),
+//   1/36  for diagonal directions (5..8).
+constexpr double w[Q] = {
+    4.0 / 9.0,
+    1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,
+    1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0
+};
+
 #endif
