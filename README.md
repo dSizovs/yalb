@@ -184,3 +184,22 @@ files, right click the file you wish to add, then "Git > Add". Once you are
 ready to commit, "Git > Commit" from the main menu bar. Add a message in the
 lower left window where it reads "Commit message", then click "Commit" or
 "Commit and Push...".
+## Project figures
+
+Sample output from the milestones:
+
+### Milestone 02 — streaming step (D2Q9)
+A single "particle" packet moving east; periodic boundary causes it to wrap.
+
+![streaming](figures/m2_streaming.png)
+
+### Milestone 03 — density bump (sound wave + diffusion)
+High-density spike at the center; pressure wave radiates outward, viscosity
+relaxes the system back to uniform density.
+
+![bump](figures/m3_bump_rho.png)
+
+### Milestone 03 — shear wave decay
+Sinusoidal horizontal velocity, decaying over time due to viscosity.
+
+![shear](figures/m3_shear_ux.png)
