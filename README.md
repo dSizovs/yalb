@@ -215,3 +215,17 @@ Velocity and density profiles over time (ω = 1):
 
 Measured ν vs analytical prediction across ω ∈ (0, 2):
 ![viscosity](figures/m4_viscosity.png)
+
+### Milestone 05 — lid-driven cavity
+
+Square cavity, top lid moves to the right at u_lid, all other walls
+stationary (bounce-back). Run to steady state. Centerline profiles
+validated against Ghia, Ghia & Shin (1982) reference data.
+
+**Re = 100:**
+![streamlines Re100](figures/m5_streamlines_Re100.png)
+![centerlines Re100](figures/m5_centerlines_Re100.png)
+
+**Re = 1000:**
+![streamlines Re1000](figures/m5_streamlines_Re1000.png)
+![centerlines Re1000](figures/m5_centerlines_Re1000.png)
