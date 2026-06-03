@@ -229,3 +229,17 @@ validated against Ghia, Ghia & Shin (1982) reference data.
 **Re = 1000:**
 ![streamlines Re1000](figures/m5_streamlines_Re1000.png)
 ![centerlines Re1000](figures/m5_centerlines_Re1000.png)
+
+### Milestone 06 — MPI domain decomposition
+
+1D domain decomposition in x across MPI ranks, with one ghost column per
+side exchanged each timestep via `MPI_Sendrecv`. Validated bit-for-bit
+against the serial solver (identical results on 1/2/4 ranks). Global
+quantities (max velocity, total mass) reduced with `MPI_Allreduce`.
+
+Strong-scaling study on an Apple M4 (4 performance + 6 efficiency cores).
+Near-ideal scaling up to 4 ranks; efficiency drops sharply beyond that as
+ranks spill onto the slower efficiency cores and the slowest rank gates
+each timestep.
+
+![scaling](figures/m6_scaling.png)
