@@ -4,33 +4,31 @@
 #include <Kokkos_Core.hpp>
 
 // D2Q9 lattice: 9 discrete velocity directions in 2D.
-//
-// Direction layout (index -> (cx, cy)):
-//   0: ( 0,  0)   rest
-//   1: ( 1,  0)   east
-//   2: ( 0,  1)   north
-//   3: (-1,  0)   west
-//   4: ( 0, -1)   south
-//   5: ( 1,  1)   north-east
-//   6: (-1,  1)   north-west
-//   7: (-1, -1)   south-west
-//   8: ( 1, -1)   south-east
+//   0: ( 0, 0) rest        1: ( 1, 0) E    2: ( 0, 1) N
+//   3: (-1, 0) W           4: ( 0,-1) S    5: ( 1, 1) NE
+//   6: (-1, 1) NW          7: (-1,-1) SW   8: ( 1,-1) SE
 
 constexpr int Q = 9;  // number of discrete velocities
 constexpr int D = 2;  // spatial dimensions
 
-// Velocity components.
-constexpr int cx[Q] = {0,  1,  0, -1,  0,  1, -1, -1,  1};
-constexpr int cy[Q] = {0,  0,  1,  0, -1,  1,  1, -1, -1};
-
-// D2Q9 weights for the equilibrium distribution.
-//   4/9   for rest,
-//   1/9   for axial directions (1..4),
-//   1/36  for diagonal directions (5..8).
-constexpr double w[Q] = {
-    4.0 / 9.0,
-    1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,
-    1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0
-};
+// Device-safe accessors. A constexpr array LOCAL to a KOKKOS_INLINE_FUNCTION
+// is usable from both host and CUDA device code, unlike a file-scope
+// constexpr array (which CUDA device kernels cannot see).
+KOKKOS_INLINE_FUNCTION int cx(int i) {
+    constexpr int v[Q] = {0, 1, 0, -1, 0, 1, -1, -1, 1};
+    return v[i];
+}
+KOKKOS_INLINE_FUNCTION int cy(int i) {
+    constexpr int v[Q] = {0, 0, 1, 0, -1, 1, 1, -1, -1};
+    return v[i];
+}
+KOKKOS_INLINE_FUNCTION double w(int i) {
+    constexpr double v[Q] = {
+        4.0 / 9.0,
+        1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,  1.0 / 9.0,
+        1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0
+    };
+    return v[i];
+}
 
 #endif

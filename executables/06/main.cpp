@@ -73,8 +73,8 @@ int main(int argc, char* argv[]) {
                 const double rho = 1.0;
                 const double u2 = ux * ux + uy * uy;
                 for (int q = 0; q < Q; ++q) {
-                    const double cu = cx[q] * ux + cy[q] * uy;
-                    f_h(i, y, q) = w[q] * rho *
+                    const double cu = cx(q) * ux + cy(q) * uy;
+                    f_h(i, y, q) = w(q) * rho *
                         (1.0 + 3.0 * cu + 4.5 * cu * cu - 1.5 * u2);
                 }
             }
@@ -132,8 +132,8 @@ int main(int argc, char* argv[]) {
                 Kokkos::MDRangePolicy<Kokkos::Rank<3>>({1, 0, 0},
                                                        {nx_local + 1, Ny, Q}),
                 KOKKOS_LAMBDA(int i, int y, int q) {
-                    const int isrc = i - cx[q];               // ghost covers +-1
-                    const int ysrc = (y - cy[q] + Ny) % Ny;
+                    const int isrc = i - cx(q);               // ghost covers +-1
+                    const int ysrc = (y - cy(q) + Ny) % Ny;
                     f_new(i, y, q) = f(isrc, ysrc, q);
                 });
 
@@ -147,15 +147,15 @@ int main(int argc, char* argv[]) {
                     for (int q = 0; q < Q; ++q) {
                         const double fv = f_new(i, y, q);
                         rho += fv;
-                        mx  += fv * cx[q];
-                        my  += fv * cy[q];
+                        mx  += fv * cx(q);
+                        my  += fv * cy(q);
                     }
                     const double ux = (rho > 0.0) ? mx / rho : 0.0;
                     const double uy = (rho > 0.0) ? my / rho : 0.0;
                     const double u2 = ux * ux + uy * uy;
                     for (int q = 0; q < Q; ++q) {
-                        const double cu = cx[q] * ux + cy[q] * uy;
-                        const double feq = w[q] * rho *
+                        const double cu = cx(q) * ux + cy(q) * uy;
+                        const double feq = w(q) * rho *
                             (1.0 + 3.0 * cu + 4.5 * cu * cu - 1.5 * u2);
                         f_new(i, y, q) += omega * (feq - f_new(i, y, q));
                     }
@@ -174,7 +174,7 @@ int main(int argc, char* argv[]) {
                     double rho = 0.0, mx = 0.0;
                     for (int q = 0; q < Q; ++q) {
                         rho += f(i, y, q);
-                        mx  += f(i, y, q) * cx[q];
+                        mx  += f(i, y, q) * cx(q);
                     }
                     const double ux = (rho > 0.0) ? mx / rho : 0.0;
                     const double a = (ux < 0.0) ? -ux : ux;

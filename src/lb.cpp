@@ -23,8 +23,8 @@ void compute_velocity(const FView& f, const RhoView& rho, const VView& v) {
         KOKKOS_LAMBDA(int x, int y) {
             double ux = 0.0, uy = 0.0;
             for (int i = 0; i < Q; ++i) {
-                ux += f(x, y, i) * cx[i];
-                uy += f(x, y, i) * cy[i];
+                ux += f(x, y, i) * cx(i);
+                uy += f(x, y, i) * cy(i);
             }
             const double r = rho(x, y);
             if (r > 0.0) { v(x, y, 0) = ux / r; v(x, y, 1) = uy / r; }
@@ -40,8 +40,8 @@ void streaming(FView& f) {
         "streaming",
         Kokkos::MDRangePolicy<Kokkos::Rank<3>>({0, 0, 0}, {Nx, Ny, Q}),
         KOKKOS_LAMBDA(int x, int y, int i) {
-            const int xs = (x - cx[i] + Nx) % Nx;
-            const int ys = (y - cy[i] + Ny) % Ny;
+            const int xs = (x - cx(i) + Nx) % Nx;
+            const int ys = (y - cy(i) + Ny) % Ny;
             f_new(x, y, i) = f(xs, ys, i);
         });
     Kokkos::deep_copy(f, f_new);
@@ -59,8 +59,8 @@ void compute_equilibrium(const RhoView& rho, const VView& v, const FView& f_eq) 
             const double uy = v(x, y, 1);
             const double u2 = ux * ux + uy * uy;
             for (int i = 0; i < Q; ++i) {
-                const double cu = cx[i] * ux + cy[i] * uy;
-                f_eq(x, y, i) = w[i] * r *
+                const double cu = cx(i) * ux + cy(i) * uy;
+                f_eq(x, y, i) = w(i) * r *
                     (1.0 + 3.0 * cu + 4.5 * cu * cu - 1.5 * u2);
             }
         });
@@ -156,10 +156,10 @@ void bounce_back_cavity(const FView& f, const FView& f_pre,
             f(x, yy, 4) = f_pre(x, yy, 2);
             // i = 7 (down-left): opposite is 5 (up-right). c_7.u = -1*u_lid
             f(x, yy, 7) = f_pre(x, yy, 5)
-                - 2.0 * w[5] * rw * (cx[5] * u_lid) / cs2;
+                - 2.0 * w(5) * rw * (cx(5) * u_lid) / cs2;
             // i = 8 (down-right): opposite is 6 (up-left). c_8.u = +1*u_lid
             f(x, yy, 8) = f_pre(x, yy, 6)
-                - 2.0 * w[6] * rw * (cx[6] * u_lid) / cs2;
+                - 2.0 * w(6) * rw * (cx(6) * u_lid) / cs2;
         });
 }
 
