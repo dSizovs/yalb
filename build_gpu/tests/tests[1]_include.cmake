@@ -1,0 +1,5 @@
+if(EXISTS "/home/fr/fr_fr/fr_ds722/yalb/build_gpu/tests/tests[1]_tests.cmake")
+  include("/home/fr/fr_fr/fr_ds722/yalb/build_gpu/tests/tests[1]_tests.cmake")
+else()
+  add_test(tests_NOT_BUILT tests_NOT_BUILT)
+endif()

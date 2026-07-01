@@ -207,20 +207,16 @@ int main(int argc, char* argv[]) {
 
         if (rank == 0) {
             const double elapsed = t1 - t0;
-            // MLUPS: million lattice updates per second (global grid N*N, Nsteps).
-            const double mlups = (double)N * (double)N * (double)Nsteps
-                                 / (elapsed * 1.0e6);
             std::cout << "nprocs=" << nprocs
                       << "  N=" << N
                       << "  steps=" << Nsteps
                       << "  omega=" << omega
                       << "  time=" << elapsed << " s"
-                      << "  MLUPS=" << mlups
                       << "  total_mass=" << global_mass << "\n";
-            // Append timing to a scaling log: nprocs N Nsteps elapsed mlups
+            // Append timing to a scaling log.
             std::ofstream tlog("scaling.txt", std::ios::app);
             tlog << nprocs << " " << N << " " << Nsteps << " "
-                 << elapsed << " " << mlups << "\n";
+                 << elapsed << "\n";
         }
     }
     Kokkos::finalize();

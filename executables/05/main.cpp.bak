@@ -106,17 +106,6 @@ int main(int argc, char* argv[]) {
                 std::cout << "step " << (step + 1)
                           << "  max|du| = " << change << "\n";
             }
-
-            // Snapshot for animation: every 1500 steps dump a frame.
-            if (step % 1500 == 0) {
-                compute_density(f, rho);
-                compute_velocity(f, rho, v);
-                Kokkos::deep_copy(rho_h, rho);
-                Kokkos::deep_copy(v_h,   v);
-                char sfn[128];
-                std::snprintf(sfn, sizeof(sfn), "cavframe_%04d.txt", step / 1500);
-                write_field(sfn, rho_h, v_h);
-            }
         }
 
         // Final field for output.
